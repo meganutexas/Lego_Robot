@@ -1,0 +1,8 @@
+action Main
+elementary()
+elementary()
+end
+
+action elementary
+say "Elementary my dear Watson"
+end

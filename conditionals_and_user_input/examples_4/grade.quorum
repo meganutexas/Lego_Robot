@@ -1,0 +1,14 @@
+text gradeInput = input("What number grade did you make in your class?")
+integer grade = cast(integer, gradeInput)
+
+if grade > 90
+say "You made an A! Good job!"
+elseif grade > 80
+say "You made a B! Solid Work!"
+elseif grade > 70
+say "You made a C! Keep Working!"
+elseif grade > 60
+say  "You made a D, so close to passing!"
+else
+say "You got an F, there's always next time"
+end

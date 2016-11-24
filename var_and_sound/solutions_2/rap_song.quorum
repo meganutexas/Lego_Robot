@@ -1,0 +1,11 @@
+// Write a quorum program that plays a rap song, but keep it clean and nice! 
+// You can do this by telling the computer to say something and then immediately
+// telling it to play some music. Using rests might help you come up with some fun beats!
+// The Music and Chord libraries have been included for you.
+
+use Libraries.Sound.Music
+use Libraries.Sound.Chord
+
+output "Rap Song"
+
+// your code here

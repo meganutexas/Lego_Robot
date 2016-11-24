@@ -1,0 +1,11 @@
+text hello = "Hello World"
+number pi = 3.14
+integer planet_count = 8
+integer plus_pluto = 9
+boolean better_with_pluto = plus_pluto > planet_count
+say "Greeting = " + hello
+say "The value of pi is " + pi
+say "The number of planets is " + planet_count
+say "Was it better when Pluto was a planet? " + better_with_pluto
+
+say "end of program"

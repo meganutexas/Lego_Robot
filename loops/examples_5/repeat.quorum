@@ -1,0 +1,22 @@
+action Main
+//Repeat a certain number of times:
+repeat 3 times
+say "Knock"
+end
+say "Penny"
+
+//Repeat while something is true:
+integer start = 0
+integer stop = 5
+repeat while start < stop
+say start + " is less than " + stop
+start = start + 1
+end
+
+//Repeat until something is true:
+integer height = 3
+repeat until height = 6
+say height + "is not 6 too short for this ride"
+height = height + 1
+end
+end //end of Main

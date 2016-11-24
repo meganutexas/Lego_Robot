@@ -1,0 +1,24 @@
+use Libraries.Containers.Array
+
+Array<integer> a
+
+a:Add(10)
+a:Add(15)
+a:Add(6)
+a:Add(5)
+a:Add(20)
+a:Add(6)
+
+integer sixes = 0
+integer counter = 0
+
+repeat while counter < a:GetSize()
+
+if a:Get(counter) = 6
+sixes = sixes + 1
+end
+
+counter = counter + 1
+end
+
+output sixes

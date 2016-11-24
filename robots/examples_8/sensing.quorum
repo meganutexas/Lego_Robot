@@ -1,0 +1,18 @@
+use Libraries.Robots.Lego.InfraredSensor
+use Libraries.Robots.Lego.Sound
+
+InfraredSensor infraredSensor
+Sound sound
+
+//Specify which port on the robot the infrared sensor is plugged into
+infraredSensor:SetPort(4)
+
+//Loop infinitely
+//In order to terminate this program, press the center and down buttons
+//on the robot simultaneously
+repeat while true
+if infraredSensor:GetDistance() < 25
+sound:Buzz()
+end
+end
+

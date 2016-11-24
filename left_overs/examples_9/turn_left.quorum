@@ -1,0 +1,18 @@
+//This program causes the robot to turn left whenever the left directional button is pressed.
+
+use Libraries.Robots.Lego.Button
+use Libraries.Robots.Lego.Motor
+use Libraries.Robots.Lego.Utility
+
+Utility utility
+Motor motor
+Button button
+
+//Run until the escape button is pressed
+repeat until button:IsButtonPressed(button:ESCAPE_BUTTON)
+if button:IsButtonPressed(button:LEFT_BUTTON)
+//Rotate the left motor backwards by 430 degrees and the right motor forwards by 430 degrees.
+motor:RotateByDegrees("B", -430)
+motor:RotateByDegrees("C", 430)
+end
+end

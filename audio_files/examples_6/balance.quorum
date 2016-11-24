@@ -1,0 +1,27 @@
+use Libraries.Sound.Audio
+
+action Main
+Audio alarm
+Audio phone
+Audio dial_tone
+
+alarm:Load("sounds/alarm.ogg")
+phone:Load("sounds/phone_ringing.ogg")
+dial_tone:Load("sounds/dial_tone.ogg")
+
+phone:SetBalance(-1) //come out of left speaker
+dial_tone:SetBalance(1) //come ouf the right speaker
+
+alarm:PlayUntilDone()
+alarm:Dispose()
+say "Get Up!"
+
+phone:PlayUntilDone()
+phone:Dispose()
+say "Someone is calling you, wake up!"
+
+dial_tone:PlayUntilDone()
+dial_tone:Dispose()
+say "It's too late, you overslept!"
+
+end //end of Main

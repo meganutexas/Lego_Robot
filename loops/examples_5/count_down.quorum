@@ -1,0 +1,14 @@
+//This code is simulating a count-down to a ship launching.
+//It is just another example of using loops
+
+action Main
+say "Prepare for launch"
+integer status = 5
+
+repeat until status = 0
+say "" + status
+status = status - 1
+end
+
+say "Blast off!"
+end //end of Main

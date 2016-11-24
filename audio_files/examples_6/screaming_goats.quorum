@@ -1,0 +1,23 @@
+use Libraries.Sound.Audio
+use Libraries.System.SystemHelper
+
+action Main
+Audio goats
+SystemHelper helper
+
+goats:Load("sounds/goat.ogg")
+goats:Play()
+
+repeat 10 times
+helper:Sleep(500) //wait for half a second
+goats:Pause() //this pause it not necessary for this, but does show how to use the action
+number new_volume = goats:GetVolume() + 10
+number new_pitch = goats:GetPitch() + 0.1
+goats:SetVolume(new_volume)
+goats:SetPitch(new_pitch)
+goats:Resume()
+end //end of repeat
+
+goats:Dispose()
+
+end //end of Main

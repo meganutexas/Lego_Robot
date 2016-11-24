@@ -1,0 +1,34 @@
+use Libraries.Robots.Lego.Motor
+use Libraries.Robots.Lego.Utility
+
+Motor motor
+Utility utility
+
+//Motors B and C are the two motors used for movement. Motor B is the left wheel,
+//motor C is the right wheel
+
+//Set the speeds of motors B and C to 720 degrees of rotation per second
+motor:SetSpeed("B", 720)
+motor:SetSpeed("C", 720)
+
+//Start rotating both motor B and C in the forward direction
+motor:RotateForward("B")
+motor:RotateForward("C")
+
+//Wait 3 seconds
+utility:DelayMilliseconds(3000)
+
+//Stop the rotation of both motor B and C
+motor:Stop("B")
+motor:Stop("C")
+
+//Start rotating both motor B and C in the backward direction
+motor:RotateBackward("B")
+motor:RotateBackward("C")
+
+//Wait 3 seconds
+utility:DelayMilliseconds(3000)
+
+//Stop the rotation of both motor B and C
+motor:Stop("B")
+motor:Stop("C")

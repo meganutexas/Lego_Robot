@@ -1,0 +1,23 @@
+// Include the instrument and music libraries, both part of the
+// sound library
+use Libraries.Sound.Instrument
+use Libraries.Sound.Music
+
+// Declare a music object, see Scales.quorum or lesson2.txt for more details
+Music music
+// Get the 0th system MIDI instrument from the music object
+Instrument instrument = music:GetInstrument(0)
+
+// Say the instrument name, then set the music object to play
+// that instrument, then play a note via the music object
+say "Instrument" + instrument:GetName()
+music:SetInstrument(instrument)
+music:Play(60, 2)
+
+// Pick a new instrument, then repeat
+instrument = music:GetInstrument(23)
+say "Instrument" + instrument:GetName()
+music:SetInstrument(instrument)
+music:Play(60, 2)
+
+say "end of program"

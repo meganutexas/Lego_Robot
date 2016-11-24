@@ -1,0 +1,83 @@
+// Include the music library, a part of the sound library
+use Libraries.Sound.Music
+
+// Declare a music object, which can be used to play one note at a time, given
+// a particular MIDI note number (0 - 127) and note length
+// (1/64, 1/8, 1/4, 1/2, 1/16, 1/32, whole or breve).
+Music music
+
+// MIDI is a specification for musical note and instrument control information used by most computer
+// music software. The midi.txt file has a list of the midi numbers and their corresponding notes.
+// Keep in mind that there are some octaves that humans cannot hear.
+
+// To play a chromatic scale (a standard 12 tone scale found repeating on any piano or keyboard),
+// we simply call upon the music object to play the 12 quarter notes in a row, each time with a different
+// note number.
+
+say "scale using explicit midi numbers"
+// Play a middle C
+music:Play(60, 0.25)
+// Play a C#
+music:Play(61, 0.25)
+// Play a D
+music:Play(62, 0.25)
+// Play a D#
+music:Play(63, 0.25)
+// Play an E
+music:Play(64, 0.25)
+// Play an F
+music:Play(65, 0.25)
+// Play an F#
+music:Play(66, 0.25)
+// Play a G
+music:Play(67, 0.25)
+// Play a G#
+music:Play(68, 0.25)
+// Play an A
+music:Play(69, 0.25)
+// Play an A#
+music:Play(70, 0.25)
+// Play a B
+music:Play(71, 0.25)
+
+say "scale using relative midi numbers"
+// Play a middle C
+music:Play(music:middleC, 0.25)
+// Play a C#
+music:Play(music:middleC + 1, 0.25)
+// Play a D
+music:Play(music:middleC + 2, 0.25)
+// Play a D#
+music:Play(music:middleC + 3, 0.25)
+// Play an E
+music:Play(music:middleC + 4, 0.25)
+// Play an F
+music:Play(music:middleC + 5, 0.25)
+// Play an F#
+music:Play(music:middleC + 6, 0.25)
+// Play a G
+music:Play(music:middleC + 7, 0.25)
+// Play a G#
+music:Play(music:middleC + 8, 0.25)
+// Play an A
+music:Play(music:middleC + 9, 0.25)
+// Play an A#
+music:Play(music:middleC + 10, 0.25)
+// Play a B
+music:Play(music:middleC + 11, 0.25)
+
+say "scale using music macros"
+music:Play(music:C, 0.25)
+music:Play(music:CSharp, 0.25)
+music:Play(music:D, 0.25)
+music:Play(music:DSharp, 0.25)
+music:Play(music:E, 0.25)
+music:Play(music:F, 0.25)
+music:Play(music:FSharp, 0.25)
+music:Play(music:G, 0.25)
+music:Play(music:GSharp, 0.25)
+music:Play(music:A, 0.25)
+music:Play(music:ASharp, 0.25)
+music:Play(music:B, 0.25)
+
+say "end of program"

@@ -1,0 +1,41 @@
+//Write a Quorum program that plays a scale from C to B, which is 12 notes, using a
+//loop. Hint: The midi number for middle C is 60. The proper Music libraries have already
+//been included for you. You will need to create the Music object yourself.
+//You may need to review lesson 2 for this practice problem.
+//Challenge: Play the scale with an instrument of the user's choosing. To do this
+//give the user a list of possible instrument/ instrument number pairs and tell them
+//to pick the number that goes with the instrument they want to play. A list of 
+//instruments and their numbers can be found in lesson2/instruments.txt
+
+use Libraries.Sound.Music
+use Libraries.Sound.Instrument
+
+action Main
+output "Loop Through Scale"
+
+//your code here
+Music music
+
+output "Choose an instrument"
+output "0: Acoustic Grand Piano"
+output "21: Accordion"
+output "26: Electric Guitar"
+output "56: Trumpet"
+output "78: Whistle"
+output "123: Bird Tweet"
+
+text inst_text = input("Instrument number:")
+integer inst = cast(integer, inst_text)
+
+Instrument instrument = music:GetInstrument(inst)
+music:SetInstrument(instrument)
+
+integer midi_value = 60
+integer end_value = midi_value + 12 + 1
+
+repeat until midi_value = end_value
+music:Play(midi_value, 0.25)
+midi_value = midi_value + 1
+end //end of repeat
+
+end //end of Main

@@ -1,0 +1,40 @@
+//Write a program that will allow the robot to explore the room under its own control.
+
+// I have included all of the lego libraries we've used so far, created their objects below, and set the infraredSensor port number below.
+
+use Libraries.Robots.Lego.Motor
+use Libraries.Robots.Lego.Sound
+use Libraries.Robots.Lego.Utility
+use Libraries.Robots.Lego.InfraredSensor
+use Libraries.Robots.Lego.Button
+
+Motor motor
+Sound sound
+Utility utility
+InfraredSensor infraredSensor
+Button button
+
+infraredSensor:SetPort(4)
+
+integer left_turns = 0;
+integer right_turns = 0;
+
+repeat until button:IsButtonPressed(button:ESCAPE_BUTTON)
+
+if infraredSensor:GetDistance() < 40
+motor:Stop("B")
+motor:Stop("C")
+
+utility:DelayMilliseconds(500)
+
+motor:RotateByDegrees("B", -430)
+motor:RotateByDegrees("C", 430)
+
+utility:DelayMilliseconds(2000)
+
+else
+motor:RotateForward("B")
+motor:RotateForward("C")
+
+end
+end

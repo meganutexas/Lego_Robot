@@ -1,0 +1,20 @@
+//This program is supposed to sound like a cat falling from a high distance and then
+//past the listener to below the listener
+use Libraries.Sound.Audio
+use Libraries.System.SystemHelper
+
+action Main
+Audio cat
+SystemHelper helper
+
+cat:Load("sounds/cat.ogg")
+cat:SetY(13.5)
+cat:Play()
+
+repeat 54 times //repeating this many times because the clip is 27 seconds long
+helper:Sleep(500)
+number new_y = cat:GetY() - 0.5
+cat:SetY(new_y)
+end //end of repeat
+
+end //end of Main

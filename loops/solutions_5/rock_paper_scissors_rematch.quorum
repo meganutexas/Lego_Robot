@@ -1,0 +1,69 @@
+//Remember the rock, paper, scissors practice from lesson 4? Write a quorum program that 
+//updates that file so that the users can decide to have a rematch. The program should
+//allow the users to keep playing rock paper scissors until they decide they are done.
+//Challenge: Count how many times each player wins and output that after the users
+//have decided they are done playing.
+
+action Main 
+output "Rock, Paper, Scissors"
+
+output "Pick your weapon: 1 for rock, 2 for paper and 3 for scissors"
+output "No peaking at your opponents weapon choice!"
+
+text rematch = "y"
+
+integer p1_wins = 0
+integer p2_wins = 0
+
+repeat while rematch = "y"
+integer weapon1 = get_weapon(1)
+integer weapon2 = get_weapon(2)
+
+integer winner = calculate_winner(weapon1, weapon2)
+
+if winner = 1
+p1_wins = p1_wins + 1
+elseif winner = 2
+p2_wins = p2_wins + 1
+end //end of if
+
+rematch = input("Would you like to play again? y or n")
+end //end repeat
+
+output "Player 1 won " + p1_wins + " times"
+output "Player 2 won " + p2_wins + " times"
+
+end //end of Main
+
+action get_weapon(integer player_num) returns integer
+
+text player_choice = input("Player " + player_num + " weapon: ")
+integer weapon = cast(integer, player_choice)
+return weapon
+
+end
+
+action calculate_winner(integer weapon1, integer weapon2) returns integer
+if weapon1 = weapon2
+output "Draw! There is no winner this time"
+return 0
+elseif weapon1 = 1 and weapon2 = 3
+output "Player 1 wins! Rock smashes scissors"
+return 1
+elseif weapon1 = 1 and weapon2 = 2
+output "Play 2 wins! Paper covers rock"
+return 2
+elseif weapon1 = 2 and weapon2 = 1
+output "Player 1 wins! Paper covers rock"
+return 1
+elseif weapon1 = 2 and weapon2 = 3
+output "Play 2 wins! Scissors cuts paper"
+return 2
+elseif weapon1 = 3 and weapon2 = 1
+output "Player 2 wins! Rock smashes scissors"
+return 2
+else
+output "Player 1 wins! Scissors cuts paper"
+return 1
+end
+end

@@ -1,0 +1,33 @@
+//Remember the screaming_goats example program? Here are you going to write a similar 
+//program except instead of increasing the pitch you will be decreasing it. Be careful
+//not to edit the pitch too dramatically at each step or you will end up with bad sounding
+//audio. You may use any .ogg file from QuorumFiles/sounds that you like, just be sure
+//you get an idea of how long the audio clip is so you don't write a loop to decrease
+//the pitch that is way too long. All the necessary libraries have already been 
+//included for you.
+
+use Libraries.Sound.Audio
+use Libraries.System.SystemHelper
+
+action Main
+output "Lower Pitch"
+
+//your code here
+Audio goats
+SystemHelper helper
+
+goats:Load("sounds/goat.ogg")
+goats:Play()
+
+repeat 10 times
+helper:Sleep(500) //wait for half a second
+goats:Pause() //this pause it not necessary for this, but does show how to use the action
+number new_pitch = goats:GetPitch() - 0.05
+goats:SetPitch(new_pitch)
+goats:Resume()
+end //end of repeat
+
+goats:Dispose()
+
+
+end //end of Main

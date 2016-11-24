@@ -1,0 +1,10 @@
+// Write a Quorum program that plays a few chords. The chords can have whatever notes
+// in them that you think will sound cool!
+// The Music and Chord libraries have already been included for you.
+
+use Libraries.Sound.Music
+use Libraries.Sound.Chord
+
+output "Cool Chords"
+
+// your code here

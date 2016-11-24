@@ -1,0 +1,19 @@
+// Include the music and chord libraries, both part of the
+// sound library
+use Libraries.Sound.Music
+use Libraries.Sound.Chord
+
+// Declare a music object, see Scales.quorum or lesson2.txt for more details
+Music music
+// Declare a chord object to store a set of notes
+Chord c
+
+// Add notes C, E and G to the chord object
+c:Add(60) // C
+c:Add(64) // E
+c:Add(67) // G
+
+// Play the chord object via the music object
+music:Play(c)
+
+say "end of program"

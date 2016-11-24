@@ -1,0 +1,12 @@
+// Write a Quorum program that is a mad libs. You should have variables like noun, 
+// adjetive etc, maybe even multiple of each (noun1, noun2). Have a story output that
+// periodically includes one of your text variables that is a part of speech.
+// In a later lesson we will update this program to ask the user what words they want
+// to use.
+// example of a simple mad lib: 
+// text noun = "penguin"
+// output "my favorite animal is a " + noun
+
+output "Mad Libs"
+
+// your code here

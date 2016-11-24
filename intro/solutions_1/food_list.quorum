@@ -1,0 +1,17 @@
+// Write a quorum program that alternates output the ingredients in your
+// favorite food with saying them.
+
+output "Ingredients to favorite food"
+say "Ingredients to favorite food"
+
+// your code here
+output "Tortellini"
+say "Tortellini"
+output "Alfredo Sauce"
+say "Alfredo Sauce"
+output "Artichoke"
+say "Artichoke"
+output "Spinach"
+say "Spinach"
+output "Onion"
+say "Onion"

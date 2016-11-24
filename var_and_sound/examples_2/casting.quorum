@@ -1,0 +1,6 @@
+text some_text = "4.2"
+// cast some_text to a number
+number some_number = cast(number, some_text)
+text some_other_text = "5"
+// cast some_other_test to an integer
+number some_other_integer = cast(integer, some_other_text)

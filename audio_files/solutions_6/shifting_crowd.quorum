@@ -1,0 +1,29 @@
+//Using the SetBalance action write a Quorum program that sounds like there are people
+//talking on the listener's left side that slowly move to talking totally on the listener's
+//right side. Remember that -1 is the balance for left and 1 is the balance for right.
+//All the necessary libraries have been included for you. There is a people_talking.ogg
+//file in QuorumFiles/sounds that you might want to use for this program.
+
+use Libraries.Sound.Audio
+use Libraries.System.SystemHelper
+
+action Main
+output "Shifting Crowd"
+
+//your code here
+Audio people
+SystemHelper helper
+people:Load("sounds/people_talking.ogg")
+people:Play()
+
+number balance = -1.0
+
+repeat 40 times
+people:SetBalance(balance)
+helper:Sleep(500) //wait for half a second
+balance = balance + 0.05
+end //end of repeat
+people:Dispose()
+
+
+end //end of Main

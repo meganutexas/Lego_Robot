@@ -1,0 +1,1347 @@
+/*
+    The foundation of any game. Any user created game should inherit from this
+    and must implement CreateGame and Update.
+*/
+
+package Libraries.Game
+
+use Libraries.Game.GameDisplay
+use Libraries.Game.DesktopDisplay
+use Libraries.Game.GameStateManager
+use Libraries.Game.Application
+use Libraries.Game.DesktopApplication
+use Libraries.Game.AndroidApplication
+use Libraries.Game.AndroidDisplay
+use Libraries.Game.AndroidConfiguration
+use Libraries.Game.Graphics.AndroidGraphics
+use Libraries.Game.IOSApplication
+use Libraries.Game.IOSConfiguration
+use Libraries.Game.IOSDisplay
+use Libraries.Game.GameInput
+use Libraries.Game.DesktopInput
+use Libraries.Game.IOSInput
+use Libraries.Game.Graphics.IOSGraphics
+use Libraries.Game.Graphics.Painter2D
+use Libraries.Game.Graphics.Font
+use Libraries.Game.Graphics.GraphicsManager
+use Libraries.Game.Graphics.Color
+use Libraries.Game.Graphics.Drawable
+use Libraries.Containers.List
+use Libraries.Containers.Array
+use Libraries.Containers.Blueprints.Iterator
+use Libraries.System.File
+use Libraries.System.Properties
+use Libraries.Interface.Panel
+use Libraries.Interface.Events.KeyboardListener
+use Libraries.Interface.Events.MouseListener
+use Libraries.Interface.Events.MouseMovementListener
+use Libraries.Interface.Events.MouseWheelListener
+use Libraries.Interface.Events.MouseEvent
+use Libraries.Interface.Item2D
+use Libraries.Interface.Item3D
+use Libraries.Interface.Events.CollisionEvent
+use Libraries.Interface.Events.TouchListener
+use Libraries.Game.Graphics.PointLight
+use Libraries.Game.Graphics.DirectionalLight
+use Libraries.Game.Graphics.AmbientLight
+use Libraries.Game.Graphics.Camera
+
+/*
+The Game class is the heart of any game in Quorum. The basic Game class will
+just display a gray screen. To make your own game, you should make a new class
+that inherits from Game, and make your own versions of the CreateGame() and
+Update(number) actions. The example below will pop up an empty gray window.
+
+Attribute: Example
+
+    use Libraries.Game.Game
+
+    class Main
+        action main
+            Game game
+            Game:StartGame()
+        end
+    end
+*/
+class Game
+
+    //public Painter2D batch = undefined
+    DesktopConfiguration desktopConfig
+    IOSConfiguration iosConfig
+    AndroidConfiguration androidConfig
+    GraphicsManager gl20 = undefined
+    GameStateManager manager
+
+    public boolean exitRequested = false
+
+    // Variables used for Panels and the event system.
+    //private Panel activePanel = undefined
+    private GameInput gameInput = undefined
+    private List<Item2D> collisionList
+    private List<CollisionEvent> currentCollisions
+
+    // Variables for the Layer system.
+    private Array<Layer> layers
+    private Layer2D currentLayer2D = undefined
+    private Layer3D currentLayer3D = undefined
+
+    private constant integer ANDROID_APPLICATION = 1
+    private constant integer DESKTOP_APPLICATION = 2
+    private constant integer IOS_APPLICATION = 3
+
+    private integer applicationType = -1
+
+    /*
+    The StartGame action will start your game. Specifically, it does this:
+    1. Creates the Game window.
+    2. Calls the CreateGame() action.
+    3. Repeatedly calls Update() until Exit() is called or the window is closed.
+
+    If you are using any actions to change the starting settings of the window,
+    call those before calling StartGame().
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+
+        class Main
+            action main
+                Game game
+                Game:StartGame()
+            end
+        end
+    */
+    action StartGame
+    
+        Application application = SelectApplicationType()
+        if application = undefined
+            alert("I could not identify what type of application to use for this operating system!")
+        end
+
+        GameStateManager manager
+        gl20 = manager:GetGameGraphics()
+
+        if application is DesktopApplication
+            if desktopConfig:title = ""
+                desktopConfig:title = "Game"
+            end
+
+            DesktopInput newInput
+            gameInput = newInput
+            manager:SetInput(gameInput)
+
+            DesktopDisplay display
+            manager:SetGameDisplay(display)
+
+            display:SetConfiguration(desktopConfig)
+            display:SetupDisplay()
+        elseif application is AndroidApplication
+            
+            // AndroidInput newInput
+            // gameInput = newInput
+            // manager:SetInput(gameInput)
+
+            AndroidDisplay display
+            manager:SetGameDisplay(display)
+            display:SetConfiguration(androidConfig)
+
+            AndroidGraphics graphics
+            manager:SetGameGraphics(graphics)
+            
+        elseif application is IOSApplication
+            
+            IOSInput newInput
+            gameInput = newInput
+            manager:SetInput(newInput)
+
+            IOSDisplay display
+            manager:SetGameDisplay(display)
+            display:SetConfiguration(iosConfig)
+
+            IOSGraphics iosGraphics
+            manager:SetGameGraphics(iosGraphics)
+        end
+
+        /*
+        We pass a reference to the layers array to the GameInput. This will 
+        allow it to properly test input on items in the game. Because it is an
+        object reference, future changes to the array of layers will also be
+        reflected in the GameInput.
+        */
+        gameInput:SetLayers(layers)
+
+        application:Setup(me)
+    end
+
+    /*
+    The Add action will add an item to the Game. This will make the game handle
+    the item for many tasks. For example, adding a Drawable to the game will
+    make it draw on the screen.
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+        use Libraries.Game.Graphics.Drawable
+
+        class Main is Game
+            Drawable bunny
+
+            action Main
+                StartGame()
+            end
+
+            action CreateGame
+                bunny:Load("Images/Rabbit.png")
+                Add(bunny)
+            end
+        end
+    */
+    action Add(Item2D item)
+        currentLayer2D:Add(item)
+    end
+
+    /*
+    The Add action will add an item to the Game. This will make the game handle
+    the item for many tasks. For example, adding a Model to the game will
+    make it draw on the screen.
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+        use Libraries.Game.Graphics.Model
+
+        class Main is Game
+            Model car
+
+            action Main
+                StartGame()
+            end
+
+            action CreateGame
+                car:Load("sedan.g3db")
+                Add(car)
+            end
+        end
+    */
+    action Add(Item3D item)
+        currentLayer3D:Add(item)
+    end
+
+    /*
+    The Remove action will remove an item that was put into the game using the
+    Add action. For example, removing a Drawable will make the game engine stop
+    drawing it.
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+        use Libraries.Game.Graphics.Drawable
+
+        class Main is Game
+            Drawable bunny
+
+            action Main
+                StartGame()
+            end
+
+            action CreateGame
+                bunny:Load("Images/Rabbit.png")
+                Add(bunny)
+
+                // If we don't have this remove command, the bunny will draw.
+                Remove(bunny)
+            end
+        end
+    */
+    action Remove(Item2D item)
+        currentLayer2D:Remove(item)
+    end
+
+    /*
+    The Remove action will remove an item that was put into the game using the
+    Add action. For example, removing a Model will make the game engine stop
+    drawing it.
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+        use Libraries.Game.Graphics.Model
+
+        class Main is Game
+            Model car
+
+            action Main
+                StartGame()
+            end
+
+            action CreateGame
+                car:Load("sedan.g3db")
+                Add(car)
+
+                // If we don't have this remove command, the bunny will draw.
+                Remove(car)
+            end
+        end
+    */
+    action Remove(Item3D item)
+        currentLayer3D:Remove(item)
+    end
+
+    /*
+    Draws all layers on the screen. Called from ContinueGame.
+    */
+    private action DrawAll
+        integer counter = 0
+        repeat layers:GetSize() times
+            layers:Get(counter):Draw()
+            counter = counter + 1
+        end
+    end
+
+    /*
+    Clears out the old pixel data. Called from ContinueGame.
+    */
+    private action ClearScreen
+        gl20:ClearScreenColor(0.85,0.85,0.85,0)
+        /*
+        16640 is the result of an OR operation on GL_COLOR_BUFFER_BIT and 
+        GL_DEPTH_BUFFER_BIT from the GraphicsManager. This means that both the
+        color and depth buffers are cleared in OpenGL (failing to do this will
+        cause odd rendering behavior).
+        */
+        gl20:ClearScreen(16640)
+    end
+
+    /*
+    This action is used by the Game to regularly handle core engine processes.
+    It is automatically called by the Game when necessary, and should never be
+    used by users.
+    */
+    action ContinueGame
+        gameInput:ProcessInputEvents()
+
+        UpdateAll()
+        Update(GetSecondsBetweenFrames())
+        TestForCollisions()
+        ClearScreen()
+        DrawAll()
+    end
+
+    /*
+    This action will set the game configuration when run on desktop platforms.
+    The configuration contains data that affect many technical details of the
+    game, such as how large the screen will be.
+    */
+    action SetConfiguration(DesktopConfiguration config)
+        desktopConfig = config
+    end
+
+    /*
+    This action will return the game's configuration for desktop platforms.
+    */
+    action GetDesktopConfiguration returns DesktopConfiguration
+        return desktopConfig
+    end
+
+    /*
+    The GetScreenWidth action will return the width of the screen as an integer.
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+
+        class Main is Game
+
+            action Main
+                StartGame()
+            end
+
+            action CreateGame
+                output GetScreenWidth()
+            end
+        end
+    */
+    action GetScreenWidth returns integer
+        return manager:GetGameDisplay():GetWidth()
+    end
+
+    /*
+    The GetScreenHeight action will return the height of the screen as an integer.
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+
+        class Main is Game
+
+            action Main
+                StartGame()
+            end
+
+            action CreateGame
+                output GetScreenHeight()
+            end
+        end
+    */
+    action GetScreenHeight returns integer
+        return manager:GetGameDisplay():GetHeight()
+    end
+
+    /*
+    Using SetColorFilter will tint all drawn objects on the currently active 
+    Layer2D that do not have their own custom color tint. For example, using a 
+    red color filter will make all objects drawn on the currently active Layer2D
+    to appear to be more red.
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+        use Libraries.Game.Graphics.Drawable
+        use Libraries.Game.Graphics.Color
+
+        class Main is Game
+        
+            Drawable bunny
+            Color tint
+
+            action Main
+                StartGame()
+            end
+
+            action CreateGame
+                bunny:Load("Rabbit.png")
+                Add(bunny)
+                
+                tint = tint:Maroon()
+
+                SetColorFilter(tint)
+            end
+        end
+    */
+    action SetColorFilter(Color newColor)
+        currentLayer2D:SetColorFilter(newColor)
+    end
+
+    /*
+    SetColorFilter can also be called using four number parameters instead of a
+    color object. The four parameters are the red, green, blue, and opacity
+    of the filter, respectively. All four of the parameters should be between 0
+    and 1, representing between 0% and 100% of that color component. For example,
+    a value of 0 for red means that the tinting color will have no red, while a
+    value of 1 will have all red components. An opacity of 0 is totally
+    transparent, while an opacity of 1 will be totally visible. 
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+        use Libraries.Game.Graphics.Drawable
+
+        class Main is Game
+        
+            Drawable bunny
+
+            action Main
+                StartGame()
+            end
+
+            action CreateGame
+                bunny:Load("Rabbit.png")
+                Add(bunny)
+                
+                // Our color will have 75% red, 0% green, 75% blue, and be
+                // totally opaque. This will tint our bunny image purple.
+
+                SetColorFilter(0.75, 0, 0.75, 1)
+            end
+        end
+    */
+    action SetColorFilter(number r, number g, number b, number a)
+        currentLayer2D:SetColorFilter(r, g, b, a)
+    end
+
+    /*
+    GetSecondsBetweenFrames will return the number of seconds that has passed
+    between the current frame and the previous one. Frames are the still images
+    drawn on the screen in rapid succession to make the images appear to move.
+    Note that the value from this field is approximately the same value as the
+    parameter in the Update action.
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+
+        class Main is Game
+
+            action Main
+                StartGame()
+            end
+
+            action Update(number time)
+                output "Seconds since last frame: " + GetSecondsBetweenFrames()
+            end
+        end
+    */
+    system action GetSecondsBetweenFrames returns number
+
+    /*
+    The Update action is where most of the game's logic goes. The code inside
+    Update will be called on every frame of the game. In other words, for
+    every time a picture is drawn on the screen, the Update action is called.
+    The number parameter is the amount of seconds that has passed since the last
+    time Update was called.
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+
+        class Main is Game
+
+            action Main
+                StartGame()
+            end
+
+            // It is very important when making our own Update action that it has
+            // the time parameter! If we don't have it, it won't be called.
+            action Update(number time)
+                output "Update was called!"
+            end
+        end
+    */
+    action Update(number time)
+
+    end
+
+    /*
+    CreateGame is called when you first start the game, and is useful for setting
+    up things that need to be initialized before they can be used, like loading
+    Drawables.
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+        use Libraries.Game.Graphics.Drawable
+
+        class Main is Game
+
+            Drawable bunny
+
+            action Main
+                StartGame()
+            end
+
+            action CreateGame
+                bunny:Load("Rabbit.png")
+                Add(bunny)
+            end
+            
+        end
+    */
+    action CreateGame
+
+    end
+
+    /*
+    The Exit action is used to tell the Game class to close the application
+    after it completes the current iteration of the main loop.
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+
+        class Main is Game
+
+            number timer = 0
+
+            action Main
+                StartGame()
+            end
+
+            action Update(number time)
+                timer = timer + time
+                if timer > 3
+                    Exit()
+                    output "Exiting the game!"
+                end
+            end
+            
+        end
+    */
+    action Exit
+        exitRequested = true
+    end
+
+    /*
+    This action updates the active Panel and all of the Items that have been
+    added to the active Panel. This is called automatically by the Game class 
+    as part of the main loop, so most users will never need to use this action
+    directly.
+    */
+    private action UpdateAll
+        integer counter = 0
+        repeat layers:GetSize() times
+            layers:Get(counter):Update(GetSecondsBetweenFrames())
+            counter = counter + 1
+        end
+    end
+
+    /*
+    This action looks for input events and notifies any event handlers that
+    have been added to the Game class as necessary. This action is called
+    automatically by the Game class as part of the main loop, so most users will
+    never need to use this action directly.
+    */
+    private action ProcessInputEvents
+        gameInput:ProcessInputEvents()
+    end
+
+    /*
+    This action adds a MouseListener to the Game. The mouse listener will be
+    notified of mouse buttons being clicked and released, so long as the event
+    is not handled by any listeners in the layers.
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+        use Libraries.Interface.Events.MouseListener
+
+        class Main is Game
+
+            MouseListener listener
+
+            action Main
+                StartGame()
+            end
+
+            action CreateGame
+                AddMouseListener(listener)
+            end
+            
+        end
+    */
+    action AddMouseListener(MouseListener listener)
+        gameInput:AddMouseListener(listener)
+    end
+
+    /*
+    This action adds a MouseMovementListener to the Game. The listener will be 
+    notified of mouse movement and dragging, so long as the event is not handled
+    by any listeners in the layers.
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+        use Libraries.Interface.Events.MouseMovementListener
+
+        class Main is Game
+
+            MouseMovementListener listener
+
+            action Main
+                StartGame()
+            end
+
+            action CreateGame
+                AddMouseMovementListener(listener)
+            end
+            
+        end
+    */
+    action AddMouseMovementListener(MouseMovementListener listener)
+        gameInput:AddMouseMovementListener(listener)
+    end
+
+    /*
+    This action adds a MouseWheelListener to the Game. The listener will be
+    notified of mouse wheel scrolling, so long as the event is not handled by
+    any listeners in the layers.
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+        use Libraries.Interface.Events.MouseWheelListener
+
+        class Main is Game
+
+            MouseWheelListener listener
+
+            action Main
+                StartGame()
+            end
+
+            action CreateGame
+                AddMouseWheelListener(listener)
+            end
+            
+        end
+    */
+    action AddMouseWheelListener(MouseWheelListener listener)
+        gameInput:AddMouseWheelListener(listener)
+    end
+
+    /*
+    This action adds a KeyboardListener to the Game. The listener will be 
+    notified of keys being pressed and released.
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+        use Libraries.Interface.Events.KeyboardListener
+
+        class Main is Game
+
+            Keyboard listener
+
+            action Main
+                StartGame()
+            end
+
+            action CreateGame
+                AddKeyboardListener(listener)
+            end
+            
+        end
+    */
+    action AddKeyboardListener(KeyboardListener listener)
+        gameInput:AddKeyboardListener(listener)
+    end
+
+    /*
+    This action removes a MouseListener from the Game. The mouse listener will 
+    no longer receive mouse events from the Game. If the given MouseListener was
+    not part of the Game, then this will have no effect.
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+        use Libraries.Interface.Events.MouseListener
+
+        class Main is Game
+
+            MouseListener listener
+
+            action Main
+                StartGame()
+            end
+
+            action CreateGame
+                AddMouseListener(listener)
+
+                RemoveMouseListener(listener)
+            end
+            
+        end
+    */
+    action RemoveMouseListener(MouseListener listener)
+        gameInput:RemoveMouseListener(listener)
+    end
+
+    /*
+    This action removes a MouseMovementListener from the Game. The listener will
+    no longer receive events from the Game. If the given MouseMovementListener
+    was not part of the Game, then this will have no effect.
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+        use Libraries.Interface.Events.MouseMovementListener
+
+        class Main is Game
+
+            MouseMovementListener listener
+
+            action Main
+                StartGame()
+            end
+
+            action CreateGame
+                AddMouseMovementListener(listener)
+
+                RemoveMouseMovementListener(listener)
+            end
+            
+        end
+    */
+    action RemoveMouseMovementListener(MouseMovementListener listener)
+        gameInput:RemoveMouseMovementListener(listener)
+    end
+
+    /*
+    This action removes a MouseWheelListener from the Game. The listener will no
+    longer receive events from the Game. If the given MouseWheelListener is not
+    part of the Game, then this will have no effect.
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+        use Libraries.Interface.Events.MouseWheelListener
+
+        class Main is Game
+
+            MouseWheelListener listener
+
+            action Main
+                StartGame()
+            end
+
+            action CreateGame
+                AddMouseWheelListener(listener)
+
+                RemoveMouseWheelListener(listener)
+            end
+            
+        end
+    */
+    action RemoveMouseWheelListener(MouseWheelListener listener)
+        gameInput:RemoveMouseWheelListener(listener)
+    end
+
+    /*
+    This action removes a KeyboardListener from the Game. The listener will no
+    longer receive events for key presses and releases.
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+        use Libraries.Interface.Events.KeyboardListener
+
+        class Main is Game
+
+            KeyboardListener listener
+
+            action Main
+                StartGame()
+            end
+
+            action CreateGame
+                AddKeyboardListener(listener)
+
+                RemoveKeyboardListener(listener)
+            end
+            
+        end
+    */
+    action RemoveKeyboardListener(KeyboardListener listener)
+        gameInput:RemoveKeyboardListener(listener)
+    end
+
+    /*
+    This action adds a TouchListener to the Game. The touch listener will be
+    notified when the user interacts with a touch screen, so long as the event
+    is not handled by any items in the layers.
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+        use Libraries.Interface.Events.TouchListener
+
+        class Main is Game
+
+            TouchListener listener
+
+            action Main
+                StartGame()
+            end
+
+            action CreateGame
+                AddTouchListener(listener)
+            end
+            
+        end
+    */
+    action AddTouchListener(TouchListener listener)
+        gameInput:AddTouchListener(listener)
+    end
+
+    /*
+    This action removes a TouchListener from the Game. The listener will no
+    longer receive TouchEvents from the Game. If the given TouchListener is not
+    a part of the Game, this action will have no effect.
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+        use Libraries.Interface.Events.TouchListener
+
+        class Main is Game
+
+            TouchListener listener
+
+            action Main
+                StartGame()
+            end
+
+            action CreateGame
+                AddTouchListener(listener)
+
+                RemoveTouchListener(listener)
+            end
+            
+        end
+    */
+    action RemoveTouchListener(TouchListener listener)
+        gameInput:RemoveTouchListener(listener)
+    end
+
+    /*
+    This action sets the starting screen size of the game. The default screen
+    size is 800 by 600. This action should be called before calling StartGame().
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+
+        class Main is Game
+
+            action Main
+                SetScreenSize(1024, 800)
+                StartGame()
+            end
+        end
+    */
+    action SetScreenSize(integer width, integer height)
+        desktopConfig:width = width
+        desktopConfig:height = height
+    end
+
+    /*
+    This action enables or disables vSync in the game. Passing a value of true
+    enables it, a value of false disables it. vSync is enabled by default. 
+    This action should be called before calling StartGame(). This option is only
+    used when the game is run on desktops.
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+
+        class Main is Game
+
+            action Main
+                SetVSync(false)
+                StartGame()
+            end
+        end
+    */
+    action SetVSync(boolean vSync)
+        desktopConfig:vSyncEnabled = vSync
+    end
+
+    /*
+    This action enables or disables resizing the game window by dragging the
+    edges of the screen. Passing a value of true enables it, a value of false
+    disables it. Resizing is disabled by default. It is only relevant for games
+    which are run on desktops.
+    This action should be called before calling StartGame().
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+
+        class Main is Game
+
+            action Main
+                EnableResizing(true)
+                StartGame()
+            end
+        end
+    */
+    action EnableResizing(boolean resize)
+        desktopConfig:resizable = resize
+    end
+
+    /*
+    This action sets the name of the game displayed at the top of the window. 
+    The default name is "Game". This action should be called before calling
+    StartGame().
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+
+        class Main is Game
+
+            action Main
+                SetGameName("Mariachi Band Simulator 3000")
+                StartGame()
+            end
+        end
+    */
+    action SetGameName(text name)
+        desktopConfig:title = name
+    end
+
+    /*
+    This action enables or disables auto resizing of textures if the game window
+    is resized. Passing a value of true enables it, a value of false disables it.
+    Texture auto resizing is enabled by default. This action should be called
+    before calling StartGame(). This option is only relevant on desktop platforms.
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+
+        class Main is Game
+
+            action Main
+                EnableTextureAutoResizing(false)
+                StartGame()
+            end
+        end
+    */
+    action EnableTextureAutoResizing(boolean resize)
+        desktopConfig:autoResizeTextures = resize
+    end
+
+    /*
+    Adds an Item to the Game to be tested for collisions. Items added in this
+    way will produce collision events if they overlap another Item that has been
+    added as a collision listener. Items can react to collisions via the 
+    BeginCollision and FinishCollision actions in Item.
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+        use Libraries.Interface.Item
+
+        class Main is Game
+
+            Item item1
+            Item item2
+
+            action Main
+                StartGame()
+            end
+
+            action CreateGame
+                AddCollisionListener(item1)
+                AddCollisionListener(item2)
+            end
+
+        end
+    */
+    action AddCollisionListener(Item2D item)
+        collisionList:Add(item)
+    end
+
+    /*
+    Removes an Item from the Game for testing for collisions. Items that have
+    been removed as collision listeners will no longer receive collision events,
+    and can no longer cause collision events in other Items.
+
+    Attribute: Example
+
+        use Libraries.Game.Game
+        use Libraries.Interface.Item
+
+        class Main is Game
+
+            Item item1
+            Item item2
+
+            action Main
+                StartGame()
+            end
+
+            action CreateGame
+                AddCollisionListener(item1)
+                AddCollisionListener(item2)
+
+                RemoveCollisionListener(item1)
+            end
+
+        end
+    */
+    action RemoveCollisionListener(Item2D item)
+        collisionList:Remove(item)
+    end
+
+    private action TestForCollisions
+        integer counter1 = 0
+        integer counter2 = 1
+        Item2D item1 = undefined
+        Item2D item2 = undefined
+
+        repeat collisionList:GetSize() times
+            item1 = collisionList:Get(counter1)
+            number x1 = item1:GetGlobalX()
+            number x2 = item1:GetGlobalX() + item1:GetWidth()
+            number y1 = item1:GetGlobalY()
+            number y2 = item1:GetGlobalY() + item1:GetHeight()
+            counter2 = counter1 + 1
+            repeat while counter2 < collisionList:GetSize()
+                item2 = collisionList:Get(counter2)
+                if x1 < item2:GetGlobalX() + item2:GetWidth() and x2 > item2:GetGlobalX() and y1 < item2:GetGlobalY() + item2:GetHeight() and y2 > item2:GetGlobalY()
+                    integer collisionCounter = 0
+                    boolean found = false
+                    CollisionEvent temp = undefined
+                    repeat while collisionCounter < currentCollisions:GetSize() and found = false
+                        temp = currentCollisions:Get(collisionCounter)
+                        if temp:Contains(item1) and temp:Contains(item2)
+                            found = true
+                        end
+                        collisionCounter = collisionCounter + 1
+                    end
+
+                    if found = false
+                        CollisionEvent newCollision
+                        newCollision:SetCollision(item1, item2)
+                        currentCollisions:Add(newCollision)
+                        newCollision:BeginCollision()
+                    end
+                else
+                    integer collisionCounter = 0
+                    boolean found = false
+                    CollisionEvent temp = undefined
+                    repeat while collisionCounter < currentCollisions:GetSize() and found = false
+                        temp = currentCollisions:Get(collisionCounter)
+                        if temp:Contains(item1) and temp:Contains(item2)
+                            found = true
+                        end
+                        collisionCounter = collisionCounter + 1
+                    end
+
+                    if found = true
+                        currentCollisions:Remove(temp)
+                        temp:FinishCollision()
+                    end
+                end
+                
+                counter2 = counter2 + 1
+            end
+
+            counter1 = counter1 + 1
+        end
+    end
+
+    /*
+    This action will set the type of Application that should be running, as well
+    as setting the type of GameInput to use.
+    */
+    private action SelectApplicationType returns Application
+
+        applicationType = SelectApplicationTypeNative()
+        if applicationType = ANDROID_APPLICATION
+            AndroidApplication app
+            return app
+        end
+        if applicationType = DESKTOP_APPLICATION
+            DesktopApplication app
+            return app
+        end
+        if applicationType = IOS_APPLICATION
+            IOSApplication app
+            return app
+        end
+        // ... Other options
+
+        return undefined
+    end
+
+    private system action SelectApplicationTypeNative returns integer
+
+    /*
+    This action sets the game to use the default layers. The default layers
+    consist of a single 3D layer, with a single 2D layer on top of it.
+    */
+    action InitializeLayers
+        layers:Empty()
+        
+        Layer3D layer3D
+        Layer2D layer2D
+        
+        layers:Add(layer3D)
+        layers:Add(layer2D)
+
+        currentLayer3D = layer3D
+        currentLayer2D = layer2D
+    end
+
+    /*
+    This action will add a new Layer to the Game. It will be added on top of all
+    other layers currently in the game.
+    */
+    action AddLayer(Layer layer)
+        layers:Add(layer)
+    end
+
+    /*
+    This action will remove the given Layer from the Game.
+    */
+    action RemoveLayer(Layer layer)
+        layers:Remove(layer)
+    end
+
+    /*
+    This action will add the given Layer to the Game at the given index.
+    */
+    action AddLayer(integer index, Layer layer)
+        layers:Add(index, layer)
+    end
+
+    /*
+    This action will remove the Layer stored in the Game at the given index
+    within the internal layer array, where the first element (at index 0) of the
+    array is the bottom layer, and further elements of the array are placed on
+    top of previous elements.
+    */
+    action RemoveLayer(integer index)
+        layers:RemoveAt(index)
+    end
+
+    /*
+    This action will set the given index to use the given Layer, overwriting any
+    Layer that was already at that index. This will not force disposal of any
+    resources that the Layer's items may have been using. 
+    */
+    action SetLayer(integer index, Layer layer)
+        layers:Set(index, layer)
+    end
+
+    /*
+    This action will set the currently active Layer2D. The current Layer2D will
+    receive the effect of actions such as Add(Item2D) or Remove(Item2D), which
+    do not specify which Layer to act upon. Other actions that specify an index
+    or a Layer to act upon will ignore this setting.
+    */
+    action SetCurrentLayer2D(Layer2D layer)
+        currentLayer2D = layer
+    end
+
+    /*
+    This action will set the currently active Layer3D. The current Layer3D will
+    receive the effect of actions such as Add(Item3D) or Remove(Item3D), which
+    do not specify which Layer to act upon. Other actions that specify an index
+    or a Layer to act upon will ignore this setting.
+    */
+    action SetCurrentLayer3D(Layer3D layer)
+        currentLayer3D = layer
+    end
+
+    /*
+    This action will return the current Layer2D which will be used during
+    actions that require a Layer if the user does not specify one, e.g., using
+    the Add(Item2D) action.
+    */
+    action GetCurrentLayer2D returns Layer2D
+        return currentLayer2D
+    end
+
+    /*
+    This action will return the current Layer3D which will be used during
+    actions that require a Layer if the user does not specify one, e.g., using
+    the Add(Item3D) action.
+    */
+    action GetCurrentLayer3D returns Layer3D
+        return currentLayer3D
+    end
+
+    /*
+    This action will return the camera that is a part of the current Layer2D.
+    */
+    action GetCamera2D returns Camera
+        return currentLayer2D:GetCamera()
+    end
+
+    /*
+    This action will return the camera that is a part of the current Layer3D.
+    */
+    action GetCamera3D returns Camera
+        return currentLayer3D:GetCamera()
+    end
+
+    /*
+    This action will return an iterator containing the Game's layers. The first
+    Layer in the iterator will be the bottom Layer, and each following Layer
+    in the iterator will be the Layer on top of the previous one.
+    */
+    action GetLayerIterator returns Iterator<Layer>
+        return layers:GetIterator()
+    end
+
+    /*
+    This action will add a DirectionalLight to the currently active Layer3D.
+    */
+    action Add(DirectionalLight light)
+        currentLayer3D:Add(light)
+    end
+
+    /*
+    This action will add a PointLight to the currently active Layer3D.
+    */
+    action Add(PointLight light)
+        currentLayer3D:Add(light)
+    end
+
+    /*
+    This action will set the ambient light on the currently active Layer3D.
+    */
+    action SetAmbientLight(AmbientLight light)
+        currentLayer3D:SetAmbientLight(light)
+    end
+
+    /*
+    This action will remove a DirectionalLight from the currently active Layer3D.
+    */
+    action Remove(DirectionalLight light)
+        currentLayer3D:Remove(light)
+    end
+
+    /*
+    This action will remove a PointLight from the currently active Layer3D.
+    */
+    action Remove(PointLight light)
+        currentLayer3D:Remove(light)
+    end
+
+    /*
+    This action will remove the ambient lighting from the currently active
+    Layer3D.
+    */
+    action RemoveAmbientLight
+        currentLayer3D:RemoveAmbientLight()
+    end
+
+    /*
+    This action will get a DirectionalLight from the currently active Layer3D, which
+    is stored at the given index inside the layer. If there are no DirectionalLights
+    within the layer, or if the index is out of bounds, then an error will be
+    thrown.
+    */
+    action GetDirectionalLight(integer index) returns DirectionalLight
+        return currentLayer3D:GetDirectionalLight(index)
+    end
+
+    /*
+    This action will get a PointLight from the currently active Layer3D, which
+    is stored at the given index inside the layer. If there are no PointLights
+    within the layer, or if the index is out of bounds, then an error will be
+    thrown.
+    */
+    action GetPointLight(integer index) returns PointLight
+        return currentLayer3D:GetPointLight(index)
+    end
+
+    /*
+    This action will return a new AmbientLight object which contains the ambient
+    lighting data of the currently active Layer3D.
+    */
+    action GetAmbientLight returns AmbientLight
+        return currentLayer3D:GetAmbientLight()
+    end
+
+    /*
+    This action will return an iterator containing all of the DirectionalLight
+    objects stored within the currently active Layer3D.
+    */
+    action GetDirectionalLights returns Iterator<DirectionalLight>
+        return currentLayer3D:GetDirectionalLights()
+    end
+
+    /*
+    This action will return an iterator containing all of the PointLight
+    objects stored within the currently active Layer3D.
+    */
+    action GetPointLights returns Iterator<PointLight>
+        return currentLayer3D:GetPointLights()
+    end
+
+end

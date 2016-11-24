@@ -1,0 +1,47 @@
+// Write a Quorum program that allows two separate users to play Rock, Paper, Scissors 
+// agains each other. The users should enter 1 for rock, 2 for paper, and 3 for scissors.
+// It is fine to just play one round, or you could have the users play the best
+// 2 out of the 3.
+// Be sure to output which player won and how they won. Try to be intentional about
+// the actions that you write.
+// Ways to win: rock smashes scissors, scissors cuts paper and paper covers rock.
+// Challenge: edit the program to play rock, paper, scissors, lizard, Spock
+
+action Main 
+output "Rock, Paper, Scissors"
+
+output "Pick your weapon: 1 for rock, 2 for paper and 3 for scissors"
+output "No peaking at your opponents weapon choice!"
+
+integer weapon1 = get_weapon(1)
+integer weapon2 = get_weapon(2)
+
+calculate_winner(weapon1, weapon2)
+
+end
+
+action get_weapon(integer player_num) returns integer
+
+text player_choice = input("Player " + player_num + " weapon: ")
+integer weapon = cast(integer, player_choice)
+return weapon
+
+end
+
+action calculate_winner(integer weapon1, integer weapon2)
+if weapon1 = weapon2
+output "Draw! There is no winner this time"
+elseif weapon1 = 1 and weapon2 = 3
+output "Player 1 wins! Rock smashes scissors"
+elseif weapon1 = 1 and weapon2 = 2
+output "Play 2 wins! Paper covers rock"
+elseif weapon1 = 2 and weapon2 = 1
+output "Player 1 wins! Paper covers rock"
+elseif weapon1 = 2 and weapon2 = 3
+output "Play 2 wins! Scissors cuts paper"
+elseif weapon1 = 3 and weapon2 = 1
+output "Player 2 wins! Rock smashes scissors"
+else
+output "Player 1 wins! Scissors cuts paper"
+end
+end

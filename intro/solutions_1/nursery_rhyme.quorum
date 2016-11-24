@@ -1,0 +1,10 @@
+// Write a quorum program that says your favorite nursery ryhme,
+// like maybe "Humpty Dumpty" or "The Itsy Bitsy Spider"
+
+output "Nursey Ryhme Program"
+
+// your code here
+say "Humpty Dumpty sat on a wall"
+say "Humpty Dumpty had a great fall"
+say "And all the king's horses and all the king's men"
+say "couldn't put Humpty together again"

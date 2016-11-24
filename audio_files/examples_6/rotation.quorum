@@ -1,0 +1,19 @@
+use Libraries.Sound.Audio
+use Libraries.System.SystemHelper
+
+action Main
+Audio car
+SystemHelper helper 
+
+car:Load("sounds/car.ogg")
+car:Play()
+
+//this loop is supposed to make it sound like the car is driving in a circle around you
+repeat 34 times //chose 34 because the clip is 17 seconds long
+helper:Sleep(500) //wait half a second
+car:Rotate(10)
+end //end of Repeat
+
+car:Dispose()
+
+end //end of Main

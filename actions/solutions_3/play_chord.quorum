@@ -1,0 +1,22 @@
+// Write a Quorum action that takes as input three note numbers, a duration,
+// and a music object, and plays the notes as a chord for the duration specified.
+// For example, if note C, E, and G are the three input notes, the action should
+// play a C major chord. The Music and Chord libraries have already been included for you.
+
+use Libraries.Sound.Music
+use Libraries.Sound.Chord
+
+action Main
+output "Play Chord"
+Music music
+integer a = 60
+integer b = 64
+integer c = 67
+number duration = 0.5
+play_chord(a, b, c, duration, music)
+end
+
+action play_chord(integer a, integer b, integer c, number duration, Music music)
+// Insert your code here
+end
+

@@ -1,0 +1,12 @@
+//This code will continue to ask the user if they want to keep going 
+//until their response is something other than the letter y
+
+action Main
+text answer = "y"
+
+repeat while answer = "y"
+answer = input("Would you like to keep going? y or n:")
+end
+
+output "goodbye"
+end //end of Main

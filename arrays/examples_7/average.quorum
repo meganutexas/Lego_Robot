@@ -1,0 +1,12 @@
+use Libraries.Containers.Array
+
+Array<integer> a
+
+a:Add(10)
+a:Add(15)
+a:Add(20)
+
+integer sum = a:Get(0) + a:Get(1) + a:Get(2)
+integer avg = sum / a:GetSize()
+
+output avg

@@ -1,0 +1,18 @@
+// Remember the mad libs practice from lesson 2? Write a quorum program that updates
+// that file so it takes in user input for the different parts of speech instead of 
+// hard coding them. For example you may want to problem the user to input a noun
+// or a verb. Be sure to print out the final version of the mad libs when the user
+// is done putting in their input.
+
+action Main
+
+output "Mad Libs Update"
+
+text noun1 = input("Noun: ")
+text verb = input("Past Tense Verb: ")
+text adjective = input("Adjective: ")
+text noun2 = input("Noun: ")
+
+output "The " + adjective + " " + noun1 + " " + verb + " over the " + noun2 + "."
+
+end

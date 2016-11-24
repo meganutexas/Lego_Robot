@@ -1,0 +1,21 @@
+Lesson 10: A program to program robots!
+
+One of last weeks practice problems was using the directional pad to have the robots perform some action (If you didn't get there, I'll include the file and it's solution in the examples folder). However, it was a little annoying only being able to press one button at a time and have to wait until the robot was done moving to try to press another. The goal of this week is to be able to enter in multiple input and then have to robot perform each one in the order they were entered. To do this, we will have to use arrays to store something that will tell us what we want the robot to do.
+
+A quick example to remind you how arrays work is below. You declare an array object with the type of what you will be storing and use Add() to add that type to the end of the array and Get("desired position") to retrieve them. Remember, arrays are zero indexed so the first element will be at index 0.
+
+You can check the size of an array using GetSize(). If you want to clear the contents of the array, use Empty().
+Example:
+
+use Libraries.Containers.Array
+Array<integer> a
+a:Add(10)
+a:Add(15)
+integer b = a:Get(0) + a:Get(1)
+integer size = a.GetSize()
+output size
+a.Empty()
+size = a.GetSize()
+output size
+
+Again, I'll include the skeleton file and the solution to the directional pad controlled robot in the examples. Be sure to try it out if you didn't get to it! After that, try to expand it to be programmable using arrays!

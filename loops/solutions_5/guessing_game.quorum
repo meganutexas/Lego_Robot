@@ -1,0 +1,21 @@
+//Write a Quorum program that repeatedly asks the user to input a number until they
+//input the "secret" number that you have chosen. If you want to be nice you can 
+//give the user a hint by telling them a range to consider for the secret number.
+//Challenge: Make the user have to type in a sequence of secret numbers in order to win,
+//giving the user hints along the way if they get some of the sequence right.
+
+action Main
+output "Guessing Game"
+
+//your code here
+text guess_text = input("Enter your guess, a number from 0 to 10:")
+number guess = cast(number, guess_text)
+
+repeat until guess = 5
+guess_text = input("Wrong! Try again: ")
+guess = cast(number, guess_text)
+end //end of until
+
+output "Excellent! You found the secret number"
+
+end //end of Main

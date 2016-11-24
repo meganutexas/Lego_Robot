@@ -1,0 +1,25 @@
+// Write a Quorum action that takes as input a single note number and an
+// amount of notes to move up or down from that original note and then returns
+// the resulting transposed note.
+// For example, if we receive note 50, with a transposition amount of 4, the resulting
+// note number should be 54.
+// As a bonus feature you could make the transpose_note action play the transposed note.
+// Don't forget to use the right library and create the Music object inside the action.
+
+action Main
+output "Transpose Note"
+integer transpose_amount = 4
+integer a = 60
+integer a_transposed = transpose_note(a, transpose_amount)
+integer b = 64
+integer b_transposed = transpose_note(b, transpose_amount)
+integer c = 67
+integer c_transposed = transpose_note(c, transpose_amount)
+end
+
+action transpose_note(integer note, integer transpose_amount) returns integer
+// Insert your code here
+
+return 0 //this is a place holder to make the code compile
+end
+

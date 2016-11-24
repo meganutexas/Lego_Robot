@@ -1,0 +1,23 @@
+// Write a Quorum action that takes as input three note numbers, a duration,
+// and a music object, and plays the notes as an arpeggio, a collection of ascending or
+// descending notes.
+// For example, if the three notes are C, E, and G, then the action
+// plays C, then E, then G, all for the specified duration and in that order.
+// The Music library has already been included for you.
+
+use Libraries.Sound.Music
+
+action Main
+output "Play Arpeggio"
+Music music
+integer a = 60
+integer b = 64
+integer c = 67
+number duration = 0.5
+play_arpeggio(a, b, c, duration, music)
+end
+
+action play_arpeggio(integer a, integer b, integer c, number duration, Music music)
+// Insert your code here
+end
+

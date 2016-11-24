@@ -1,0 +1,29 @@
+Lesson Overview:
+
+Lesson 1: Intro to Command Line, Quorum and Git  
+Lesson 2: Variables and the Sound Library  
+Lesson 3: Actions  
+Lesson 4: Conditionals and User Input  
+Lesson 5: Loops  
+Lesson 6: Audio Files
+Lesson 7: Arrays  
+Lesson 8: Intro to Robots  
+Lesson 9: Inheritance - TBD   
+Lesson 10: Keyboard Listener - TBD 
+Lesson 11: The Game Class - TBD
+Lesson 12: Putting It All Together - TBD
+Bonus 1: Nested Loops 
+Bonus 2: Lists  
+Bonus 3: Classes/ Objects
+
+Each Lesson Folder will have the following items:
+1. A lessonWhatever.txt file with instructions for the lesson as well as any tutorial
+type information the students will need for the lesson.
+2. An examples directory that holds example code for the lesson.
+3. An practice directory that holds exercises for the students to do for each lesson
+
+The examples and practice directories also have a run.sh script inside of them. This script
+is used to compile and run the .quorum files the students will be writing. The script was written so that it
+would not be necessary to have the Quorum.jar file and Library directory in multiple places as this
+would make the repo extremely big. An explanation on how to use the run.sh script can be found
+in lesson1.txt.

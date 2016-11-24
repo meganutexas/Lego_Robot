@@ -1,0 +1,27 @@
+//Using the SetVolume action write a Quorum program that alternates between the audio being
+//loud and soft. You can pick the time interval and the whatever audio file you want to 
+//use from the QuorumFiles/sound directory. All the necessary libraries have been
+//included for you.
+
+use Libraries.Sound.Audio
+use Libraries.System.SystemHelper
+
+action Main
+output "Volume Jumps"
+
+//your code here
+Audio beeps
+beeps:Load("sounds/beeps.ogg")
+beeps:SetVolume(0.25)
+beeps:Play()
+
+SystemHelper helper
+repeat 20 times
+helper:Sleep(300)
+beeps:SetVolume(2)
+helper:Sleep(300)
+beeps:SetVolume(0.25)
+end //end of repeat
+beeps:Dispose()
+
+end //end of Main

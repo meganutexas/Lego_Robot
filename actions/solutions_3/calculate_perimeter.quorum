@@ -1,0 +1,10 @@
+// Write Quorum actions that will calculate and return the perimeter of a rectangle, 
+// the circumference of a circle, and the perimeter of a triangle. These will be 3
+// separate actions. The main action has been included for you.
+
+action Main
+output "Calculate Perimeter"
+// your code here
+end
+
+// your code here

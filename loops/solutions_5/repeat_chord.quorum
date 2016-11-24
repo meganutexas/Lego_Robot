@@ -1,0 +1,32 @@
+//Write a Quorum program that plays a chord multiple times. The Music and Chord libraries 
+//have already been included for you. You may need to review lesson 2  for this practice
+//problem.
+//Challenge: Allow the user to indicate how many times they want the chord to repeat.
+
+use Libraries.Sound.Music
+use Libraries.Sound.Chord
+
+action Main
+output "Repeat Chord"
+
+//your code here
+Music music
+Chord c
+
+// Add notes C, E and G to the chord object
+c:Add(60) // C
+c:Add(64) // E
+c:Add(67) // G
+
+text num_text = input("How many times would you like to play the chord?")
+integer num = cast(integer, num_text)
+integer count = 1
+
+repeat num times
+say "" + count
+music:Play(c)
+count = count + 1
+end //end of repeat
+
+
+end //end of Main

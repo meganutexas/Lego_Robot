@@ -1,0 +1,25 @@
+// Write a quorum program that takes in a number grade and returns the letter grade
+// to the user. For example if the user entered a 72 you should print out a C.
+// Hint: Use an else/elseif/else type structure ot make you coding more efficient.
+// Feel free to do everything in the Main action or create other actions.
+// Bonus: Implement a plus minus system for the grades.
+
+action Main
+output "Get Grade"
+
+text gradeInput = input("What number grade did you make in your class?")
+integer grade = cast(integer, gradeInput)
+
+if grade >= 90
+output "A"
+elseif grade >= 80
+output "B"
+elseif grade >= 70
+output "C"
+elseif grade >= 60
+output "D"
+else
+output "F"
+end
+
+end

@@ -1,0 +1,2 @@
+text name = input("Please enter your first name: ")
+output name

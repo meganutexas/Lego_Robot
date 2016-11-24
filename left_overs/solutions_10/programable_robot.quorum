@@ -1,0 +1,68 @@
+use Libraries.Containers.Array
+use Libraries.Robots.Lego.Motor
+use Libraries.Robots.Lego.Sound
+use Libraries.Robots.Lego.Utility
+use Libraries.Robots.Lego.InfraredSensor
+use Libraries.Robots.Lego.Button
+
+Motor motor
+Sound sound
+Utility utility
+InfraredSensor infraredSensor
+Button button
+
+infraredSensor:SetPort(4)
+
+integer left = 0
+integer up = 1
+integer right = 2
+integer down = 3
+integer center = 4
+Array<integer> program
+
+repeat until button:IsButtonPressed(button:ESCAPE_BUTTON)
+	if button:IsButtonPressed(button:LEFT_BUTTON)
+		program:Add(left)
+	elseif button:IsButtonPressed(button:RIGHT_BUTTON)
+		program:Add(right)
+	elseif button:IsButtonPressed(button:DOWN_BUTTON)
+		program:Add(down)
+	elseif button:IsButtonPressed(button:UP_BUTTON)
+		program:Add(up)
+	elseif button:IsButtonPressed(button:CENTER_BUTTON)
+		program:Add(center)
+	end
+end
+
+integer index = 0
+integer size = program:GetSize()
+
+repeat while index < size
+	integer command = program:Get(index)
+	if command = left
+		motor:RotateByDegrees("B", -430)
+		motor:RotateByDegrees("C", 430)
+		utility:DelayMilliseconds(1500)
+		index = index + 1
+
+	elseif command = right
+		motor:RotateByDegrees("B", 430)
+		motor:RotateByDegrees("C", -430)
+		utility:DelayMilliseconds(1500)
+		index = index + 1
+
+	elseif command = down
+		motor:RotateByDegrees("A", -900)  // just a guess?
+		utility:DelayMilliseconds(3000)
+	elseif command = up
+		motor:RotateByDegrees("A", 900)  // just a guess?
+		utility:DelayMilliseconds(3000)
+		index = index + 1
+	elseif command = center
+		motor:RotateByDegrees("B", 860)
+		motor:RotateByDegrees("C", 860)
+		utility:DelayMilliseconds(2500)
+		index = index + 1
+	end
+	
+end

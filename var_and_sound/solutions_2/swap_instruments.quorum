@@ -1,0 +1,12 @@
+// Write a Quorum program that plays interesting notes but switches instruments a few times
+// throughout the song. Your pattern can be as simple as B A B or as complicated as you
+// want to make it. The important thing is for you to swap the instruments.
+// Take a look at instruments.txt to see all the instrument options!
+// The Music and Instrument libraries have been included for you.
+
+use Libraries.Sound.Instrument
+use Libraries.Sound.Music
+
+output "Swap Instruments"
+
+// your code here

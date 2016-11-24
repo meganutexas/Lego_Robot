@@ -1,0 +1,40 @@
+// write a program that makes the robot repeat the action of moving forwards, stopping, and turning around. Make it repeat this forever!
+
+// I have included all of the lego libraries we've used so far, created their objects below, and set the infraredSensor port number below.
+
+use Libraries.Robots.Lego.Motor
+use Libraries.Robots.Lego.Sound
+use Libraries.Robots.Lego.Utility
+use Libraries.Robots.Lego.InfraredSensor
+use Libraries.Robots.Lego.Button
+
+Motor motor
+Sound sound
+Utility utility
+InfraredSensor infraredSensor
+Button button
+
+infraredSensor:SetPort(4)
+
+repeat until button:IsButtonPressed(button:ESCAPE_BUTTON)
+
+// moving forward
+motor:RotateForward("B")
+motor:RotateForward("C")
+
+// pause out of respect
+utility:DelayMilliseconds(5000)
+
+motor:Stop("B")
+motor:Stop("C")
+
+utility:DelayMilliseconds(1000)
+
+// do a 180 degree turn
+motor:RotateByDegrees("B", -860)
+motor:RotateByDegrees("C", 860)
+
+// pause out of respect
+utility:DelayMilliseconds(3000)
+
+end

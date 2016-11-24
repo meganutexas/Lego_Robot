@@ -1,0 +1,10 @@
+use Libraries.Containers.Array
+
+Array<integer> a
+
+a:Add(10)
+a:Add(15)
+
+integer b = a:Get(0) + a:Get(1)
+
+output b

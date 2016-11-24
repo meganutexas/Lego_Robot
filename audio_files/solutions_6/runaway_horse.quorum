@@ -1,0 +1,28 @@
+//Using the SetX, SetY, and/or SetZ actions write a Quorum program that makes it sound
+//like a horse is running away from the listener. There is a horse_trotting.ogg file in
+//QuorumFiles/sounds that you may find helpful. All the necessary libraries have been
+//included for you. You may want to review loops for this program.
+//Challenge: Make the horse sound like it is running in a zig-zag away from the listener.
+
+use Libraries.Sound.Audio
+use Libraries.System.SystemHelper
+
+action Main
+output "Runaway Horse"
+
+//your code here
+Audio horses
+SystemHelper helper
+horses:Load("sounds/horse_trotting.ogg")
+horses:Play()
+
+number pos = 0.5
+repeat 20 times
+helper:Sleep(250)
+horses:SetX(pos)
+horses:SetY(pos)
+pos = pos + 0.5
+end //end of repeat
+
+
+end //end of Main

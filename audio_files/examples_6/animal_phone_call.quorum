@@ -1,0 +1,42 @@
+//This program is just a simple example of what you can do when playing multiple audio files
+use Libraries.Sound.Audio
+use Libraries.System.SystemHelper
+
+action Main
+SystemHelper helper
+
+Audio phone_ringing
+phone_ringing:Load("sounds/phone_ringing.ogg")
+phone_ringing:PlayUntilDone()
+phone_ringing:Dispose()
+
+say "Hello?"
+
+Audio goat
+goat:Load("sounds/goat.ogg")
+goat:Play()
+helper:Sleep(3000)
+goat:Stop()
+goat:Dispose()
+
+say "Excuse me? I didn't quite get that"
+
+Audio hen
+hen:Load("sounds/hen.ogg")
+hen:PlayUntilDone()
+hen:Dispose()
+say "What? This must be some prankster"
+
+Audio bird_flying
+bird_flying:Load("sounds/bird_flying.ogg")
+bird_flying:PlayUntilDone()
+bird_flying:Dispose()
+
+say "I guess the bird has flown the coop"
+
+Audio joke_drums
+joke_drums:Load("sounds/joke_drums.ogg")
+joke_drums:PlayUntilDone()
+joke_drums:Dispose()
+
+end //end of Main

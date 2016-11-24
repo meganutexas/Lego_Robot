@@ -1,0 +1,11 @@
+integer a = 1
+integer b = 1000
+integer c = 0
+if a > 100
+c = 1
+elseif b = 100
+c = 2
+else
+c = 3
+end
+say "The value of c is " + c

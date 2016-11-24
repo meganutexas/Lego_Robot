@@ -1,0 +1,38 @@
+//Write a program that will allow the robot to do the following movements using only the directional buttons on the brick: move forward, tighten grip, loosen grip, turn left, turn right.
+
+// I have included all of the lego libraries we've used so far, created their objects, and set the infraredSensor port number below.
+
+use Libraries.Robots.Lego.Motor
+use Libraries.Robots.Lego.Sound
+use Libraries.Robots.Lego.Utility
+use Libraries.Robots.Lego.InfraredSensor
+use Libraries.Robots.Lego.Button
+
+Motor motor
+Sound sound
+Utility utility
+InfraredSensor infraredSensor
+Button button
+
+infraredSensor:SetPort(4)
+
+repeat until button:IsButtonPressed(button:ESCAPE_BUTTON)
+if button:IsButtonPressed(button:LEFT_BUTTON)
+motor:RotateByDegrees("B", -430)
+motor:RotateByDegrees("C", 430)
+
+elseif button:IsButtonPressed(button:RIGHT_BUTTON)
+motor:RotateByDegrees("B", 430)
+motor:RotateByDegrees("C", -430)
+
+elseif button:IsButtonPressed(button:DOWN_BUTTON)
+motor:RotateByDegrees("A", -900)  // just a guess?
+
+elseif button:IsButtonPressed(button:UP_BUTTON)
+motor:RotateByDegrees("A", 900)  // just a guess?
+
+elseif button:IsButtonPressed(button:CENTER_BUTTON)
+motor:RotateByDegrees("B", 860)
+motor:RotateByDegrees("C", 860)
+end
+end

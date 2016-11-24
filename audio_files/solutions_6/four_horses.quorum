@@ -1,0 +1,42 @@
+//Using the Rotate action write a Quorum program that makes it sound like there is a
+//horse on 0 degrees, 90 degrees, 180 degrees, and 270 degrees alternately. All together
+//it should sound like there are 4 horses. All the necessary files have been included for
+//you. There is a horse_neigh.ogg file in QuorumFiles/sounds that you may find helpful.
+
+use Libraries.Sound.Audio
+use Libraries.System.SystemHelper
+
+action Main
+output "Four Horses"
+
+//your code here
+Audio north
+Audio south
+Audio west
+Audio east
+SystemHelper helper
+
+north:Load("sounds/horse_neigh.ogg")
+south:Load("sounds/horse_neigh.ogg")
+west:Load("sounds/horse_neigh.ogg")
+east:Load("sounds/horse_neigh.ogg")
+
+south:Rotate(180)
+west:Rotate(270)
+east:Rotate(90)
+
+north:Play()
+helper:Sleep(2000)
+north:Dispose()
+east:Play()
+helper:Sleep(2000)
+east:Dispose()
+south:Play()
+helper:Sleep(2000)
+south:Dispose()
+west:Play()
+helper:Sleep(2000)
+west:Dispose()
+
+
+end //end of Main

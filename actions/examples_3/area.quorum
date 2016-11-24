@@ -1,0 +1,11 @@
+action Main
+number radius = 2
+number area = calculate_area(radius)
+say "" + area
+end
+
+action calculate_area(number radius) returns number
+number pi = 3.14
+number area = pi * radius * radius
+return area
+end

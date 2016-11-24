@@ -1,0 +1,17 @@
+use Libraries.System.SystemHelper
+use Libraries.Sound.Audio
+
+action Main
+
+Audio audio
+SystemHelper helper
+
+audio:Load("sounds/helicopters.ogg")
+audio:Play()
+
+helper:Sleep(5000)
+say "Get to the chopper!!"
+helper:Sleep(5000)
+audio:Dispose()
+
+end //end of Main

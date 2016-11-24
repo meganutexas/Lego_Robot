@@ -1,0 +1,11 @@
+// Write a quorum program that outputs the basic information about your favorite
+// animal to the screen.
+
+output "Favorite Animal"
+
+// your code goes here
+output "My favorite animal is a giraffe."
+output "Giraffes are have long necks and bodies like horses."
+output "Giraffes have long tongues."
+output "Giraffes have weird horn type things on their heads."
+

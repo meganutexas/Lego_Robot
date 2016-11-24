@@ -1,0 +1,24 @@
+// Write a Quorum program that does the following calculations using whatever
+// variables you think are appropriate. Be sure to output or say results.
+// 1. How old will you be in 2050?
+// 2. What is the area of a shape? You can pick the shape!
+// 3. Is Bob taller than Dave? For this, assign Bob and Dave number heights, compare them,
+// and assign the result to a boolean
+
+output "Calculations"
+
+// your code here
+integer birth_year = 1993
+integer age = 2050 - 1993
+output "I will be " + age + " in 2050"
+
+number pi = 3.14
+number radius = 3
+number area = pi * radius * radius
+output "The area of a circle with radius 3 is " + area
+
+number bob = 5.4
+number dave = 6.1
+boolean taller = bob > dave
+output "Is Bob taller than Dave? " +  taller
+

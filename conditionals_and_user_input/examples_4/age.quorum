@@ -1,0 +1,4 @@
+text ageInput = input("How old are you?")
+integer age = cast(integer, ageInput)
+say "You are" + age
+say "years old"

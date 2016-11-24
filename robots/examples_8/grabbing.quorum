@@ -1,0 +1,29 @@
+use Libraries.Robots.Lego.Motor
+use Libraries.Robots.Lego.Utility
+
+Motor motor
+Utility utility
+
+//Motor A is the motor used for grabbing. Rotating it forward will close
+//the grabber, and rotating it backward will open it
+
+//Set the speed of motor A to 360 degrees of rotation per second
+motor:SetSpeed("A", 360)
+
+//Start rotating motor A in the forward direction
+motor:RotateForward("A")
+
+//Wait 3 seconds
+utility:DelayMilliseconds(3000)
+
+//Stop the rotation of motor A
+motor:Stop("A")
+
+//Start rotating motor A in the backward direction
+motor:RotateBackward("A")
+
+//Wait 3 seconds
+utility:DelayMilliseconds(3000)
+
+//Stop the rotation of motor A
+motor:Stop("A")

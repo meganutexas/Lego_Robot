@@ -1,0 +1,37 @@
+use Libraries.Robots.Lego.Motor
+use Libraries.Robots.Lego.Sound
+use Libraries.Robots.Lego.Utility
+use Libraries.Robots.Lego.InfraredSensor
+
+Motor motor
+Sound sound
+Utility utility
+InfraredSensor infraredSensor
+
+infraredSensor:SetPort(4)
+
+//Loop infinitely
+//In order to terminate this program, press the center and down buttons
+//on the robot simultaneously
+repeat while true
+
+//If the robot is too close to something, play a buzzing sound, then
+//turn the robot around
+if infraredSensor:GetDistance() < 75
+sound:Buzz()
+motor:RotateForward("B")
+motor:RotateBackward("C")
+utility:DelayMilliseconds(1000)
+motor:Stop("B")
+motor:Stop("C")
+
+//If the robot is not to close to anything, move forward for one second
+else
+motor:RotateForward("B")
+motor:RotateForward("C")
+utility:DelayMilliseconds(1000)
+motor:Stop("B")
+motor:Stop("C")
+
+end
+end

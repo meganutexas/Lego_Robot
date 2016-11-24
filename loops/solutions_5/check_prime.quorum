@@ -1,0 +1,43 @@
+//Write a Quorum program that asks the user to input an integer and then checks
+//to see if that integer is prime. If it is a prime tell the user that they 
+//entered a prime number yay! You may want to create an action that determines if a number
+//is prime or not.
+//Hint: The modulus operation, mod, returns the remainder when the integer to the left is
+//divided by integer on the right. For example 5 mod 3 = 2 and 6 mod 2 = 0.
+//Challenge: Ask the user if they would like to calculate another prime and only end the
+//program when the user indicates they would like to stop.
+
+action Main
+output "Check Prime"
+
+//your code here
+text answer = "y"
+
+repeat while answer = "y"
+text check_text = input("Enter a number:")
+integer to_check = cast(integer, check_text) //can't use check because it is a keyword
+
+boolean prime = is_prime(to_check)
+
+if prime = true
+output "The number you entered was prime! Excellent!"
+else
+output "That number was not prime! Oops!"
+end //end of if
+answer = input("Would you like to check another number? y or no")
+end //end of while y
+
+end //end of Main
+
+action is_prime(integer to_check) returns boolean
+integer start = 2
+
+repeat until start = to_check
+if to_check mod start = 0
+return false
+end //end of if
+start = start + 1
+end //end of while
+
+return true
+end //end of is_prime

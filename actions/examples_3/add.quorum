@@ -1,0 +1,8 @@
+action Main
+integer a = add()
+output a
+end
+action add returns integer
+integer value = 15 + 10
+return value
+end

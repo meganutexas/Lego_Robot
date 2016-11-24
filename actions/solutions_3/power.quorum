@@ -1,0 +1,10 @@
+// Write a Quorum action that takes in a number and returns that number squared. 
+// For example if the input was 3 your action would return 9.
+// The Main action has been provided for you.
+
+action Main
+output "Power"
+// your code here
+end
+
+// your code here

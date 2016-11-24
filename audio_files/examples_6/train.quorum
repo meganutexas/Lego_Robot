@@ -1,0 +1,9 @@
+use Libraries.Sound.Audio
+
+action Main
+Audio audio
+Audio train
+train:Load("sounds/train_bell.ogg")
+train:PlayUntilDone()
+train:Dispose()
+end //end of main

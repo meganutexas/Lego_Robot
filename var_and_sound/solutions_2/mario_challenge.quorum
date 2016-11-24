@@ -1,0 +1,16 @@
+// Write a Quorum program that plays the Mario theme song. This song includes a lot of
+// notes as well as quite a few rests. All notes and rests mentioned are 8th notes meaning
+// the notes should have a duration of 0.125.
+// You can get to the high version of a note by adding 12 to it and you can get
+// to the low version by subtracting 12.
+// example:
+// music:Play(music:C + 12, 0.25) is a high C
+// music:Play(music:C - 12, 0.25) is a low C
+// Here are the notes and rests for the song, rests are Rs:
+// C (high) R R G R R E R R A R B R ASharp A R G E G A R F G R E R C D B
+
+// You will need to include the libraries yourself for this exercise.
+
+output "Song Challenge"
+
+// your code here
